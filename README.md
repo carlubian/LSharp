@@ -1,4 +1,4 @@
-# L#
+Lang# L#
 ## Let's make a programming language. What could go wrong?
 
 L# is a dynamic programming language that is compiled into C# code.
@@ -30,4 +30,4 @@ To use the L# Compiler, you need the .NET Core 2.0 Runtime, available [here](htt
 ***
 
 ## More information
-Visit our website at [http://LSharp.azurewebsites.net](http://LSharp.azurewebsites.net) to get more information and view guides on how to use L#
+Visit our website at [http://LSharpLang.azurewebsites.net](http://LSharpLang.azurewebsites.net) to get more information and view guides on how to use L#
