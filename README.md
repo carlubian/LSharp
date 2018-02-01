@@ -1,3 +1,4 @@
+![LSharp](http://carlubian.azurewebsites.net/images/LSharp.png "LSharp")
 ## Let's make a programming language. What could go wrong?
 
 L# is a dynamic programming language that is compiled into C# code.
