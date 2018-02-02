@@ -7,12 +7,12 @@ using System.Globalization;
 
 namespace LSharp.CodeGeneration
 {
-    public class CSharpCodeGenerator : LSharpParserBaseVisitor<object>
+    public class CSharpCodeGenerator : LSharpParserBaseVisitor<object>, IDisposable
     {
         private int tab = 0;
-        private string file = "test.ls";
+        private readonly string file = "test.ls";
         private string className = "";
-        private TextWriter output;
+        private readonly TextWriter output;
 
         public CSharpCodeGenerator()
         {
@@ -143,7 +143,9 @@ namespace LSharp.CodeGeneration
                 }
             }
             else
+            {
                 VisitChildren(context);
+            }
 
             return null;
         }
@@ -174,13 +176,17 @@ namespace LSharp.CodeGeneration
             Genera("");
             /// Special case for Entry Point method
             if (context.ENTRYPOINT() != null)
+            {
                 Genera("public static void Main(string[] args)");
+            }
             else
+            {
                 Genera((context.access().PUBLIC() != null ? "public " : context.access().INTERNAL() != null ? "internal " : "private ")
                     + (context.STATIC() != null ? "static " : "")
                     + (context.VAR() != null ? "dynamic " : "void ")
                     + context.ident()[0].Accept(this)
                     + "(" + context.@params().Accept(this) + ")");
+            }
             Genera("{");
             tab++;
 
@@ -203,9 +209,13 @@ namespace LSharp.CodeGeneration
                 Genera("{");
                 tab++;
                 if (context.ENTRYPOINT() == null)
+                {
                     Genera(context.ident().Length > 1 && context.ident()[1] != null ? (context.ident()[1].Accept(this) + "(e);") : "// Intentionally left empty");
+                }
                 else
+                {
                     Genera(context.ident().Length > 0 && context.ident()[0] != null ? (context.ident()[0].Accept(this) + "(e);") : "// Intentionally left empty");
+                }
                 tab--;
                 Genera("}");
             }
@@ -218,17 +228,18 @@ namespace LSharp.CodeGeneration
 
         public override object VisitCtorDef([NotNull] LSharpParser.CtorDefContext context)
         {
-            /// Static constructor/initializer/whatever
-            // static ClassName { ... }
+            /// Static constructor/initializer
             if (context.STATIC() != null)
+            {
                 Genera("static " + className + "()");
-
+            }
             /// Normal constructor
-            // new ClassName(...) { ... }
             else
+            {
                 Genera((context.access().PUBLIC() != null ? "public " : context.access().INTERNAL() != null ? "internal " : "private ")
                     + className
                     + "(" + context.@params().Accept(this) + ")");
+            }
             Genera("{");
             tab++;
 
@@ -241,7 +252,9 @@ namespace LSharp.CodeGeneration
             }
 
             foreach (var st in context.nonEndingStatement())
+            {
                 st.Accept(this);
+            }
 
             if (context.QM() != null)
             {
@@ -302,7 +315,9 @@ namespace LSharp.CodeGeneration
             tab++;
 
             foreach (var st in context.nonEndingStatement())
+            {
                 st.Accept(this);
+            }
 
             context.endingStatement().Accept(this);
 
@@ -319,7 +334,9 @@ namespace LSharp.CodeGeneration
             tab++;
 
             foreach (var st in context.nonEndingStatement())
+            {
                 st.Accept(this);
+            }
 
             context.endingStatement().Accept(this);
 
@@ -340,7 +357,9 @@ namespace LSharp.CodeGeneration
                 tab++;
 
                 foreach (var st in context.caseBlock()[0].nonEndingStatement())
+                {
                     st.Accept(this);
+                }
                 context.caseBlock()[0].endingStatement().Accept(this);
 
                 tab--;
@@ -353,7 +372,9 @@ namespace LSharp.CodeGeneration
                     tab++;
 
                     foreach (var st in context.caseBlock()[i].nonEndingStatement())
+                    {
                         st.Accept(this);
+                    }
                     context.caseBlock()[i].endingStatement().Accept(this);
 
                     tab--;
@@ -367,7 +388,9 @@ namespace LSharp.CodeGeneration
                     tab++;
 
                     foreach (var st in context.defaultBlock().nonEndingStatement())
+                    {
                         st.Accept(this);
+                    }
                     context.defaultBlock().endingStatement().Accept(this);
 
                     tab--;
@@ -382,7 +405,9 @@ namespace LSharp.CodeGeneration
             if (context.caseBlock().Length == 0 && context.defaultBlock() != null)
             {
                 foreach (var st in context.defaultBlock().nonEndingStatement())
+                {
                     st.Accept(this);
+                }
                 context.defaultBlock().endingStatement().Accept(this);
 
                 return null;
@@ -391,7 +416,9 @@ namespace LSharp.CodeGeneration
             /// Empty switch (ignored)
             // expr ??
             if (context.caseBlock().Length == 0 && context.defaultBlock() == null)
+            {
                 return null;
+            }
 
             return null;
         }
@@ -399,7 +426,9 @@ namespace LSharp.CodeGeneration
         public override object VisitIfBlock([NotNull] LSharpParser.IfBlockContext context)
         {
             foreach (var st in context.nonEndingStatement())
+            {
                 st.Accept(this);
+            }
 
             return null;
         }
@@ -407,7 +436,9 @@ namespace LSharp.CodeGeneration
         public override object VisitElseBlock([NotNull] LSharpParser.ElseBlockContext context)
         {
             foreach (var st in context.nonEndingStatement())
+            {
                 st.Accept(this);
+            }
 
             return null;
         }
@@ -444,7 +475,9 @@ namespace LSharp.CodeGeneration
                 tab++;
 
                 foreach (var st in context.nonEndingStatement())
+                {
                     st.Accept(this);
+                }
                 context.endingStatement().Accept(this);
 
                 tab--;
@@ -459,7 +492,9 @@ namespace LSharp.CodeGeneration
                 tab++;
 
                 foreach (var st in context.nonEndingStatement())
+                {
                     st.Accept(this);
+                }
                 context.endingStatement().Accept(this);
 
                 tab--;
@@ -481,7 +516,9 @@ namespace LSharp.CodeGeneration
             StringBuilder sb = new StringBuilder(" : ");
 
             foreach (var param in context.ident())
+            {
                 sb.Append(param.Accept(this) + ", ");
+            }
 
             sb.Remove(sb.Length - 2, 2);
 
@@ -494,10 +531,14 @@ namespace LSharp.CodeGeneration
         {
             /// ident.ident
             if (context.DOT() != null)
+            {
                 return context.ident()[0].Accept(this) + "." + context.ident()[1].Accept(this);
+            }
             /// ident[expression]
             if (context.OSB() != null)
+            {
                 return context.ident()[0].Accept(this) + "[" + context.expression().Accept(this) + "]";
+            }
             /// ident<ident>
             if (context.LT() != null)
             {
@@ -505,7 +546,9 @@ namespace LSharp.CodeGeneration
                 res += context.ident()[1].Accept(this);
 
                 for (int i = 2; i < context.ident().Length; i++)
+                {
                     res += ", " + context.ident()[i].Accept(this);
+                }
 
                 res += ">";
 
@@ -513,7 +556,9 @@ namespace LSharp.CodeGeneration
             }
             /// new ident()
             if (context.NEW() != null)
+            {
                 return "new " + context.funcCall().Accept(this);
+            }
 
             return context.GetText();
         }
@@ -537,11 +582,15 @@ namespace LSharp.CodeGeneration
         public override object VisitParams([NotNull] LSharpParser.ParamsContext context)
         {
             if (context.ident().Length == 0)
+            {
                 return "";
+            }
 
             StringBuilder sb = new StringBuilder();
             foreach (var param in context.ident())
+            {
                 sb.Append("dynamic " + param.Accept(this) + ", ");
+            }
 
             sb.Remove(sb.Length - 2, 2);
 
@@ -551,11 +600,15 @@ namespace LSharp.CodeGeneration
         public override object VisitArgs([NotNull] LSharpParser.ArgsContext context)
         {
             if (context.expression().Length == 0)
+            {
                 return "";
+            }
 
             StringBuilder sb = new StringBuilder();
             foreach (var param in context.expression())
+            {
                 sb.Append(param.Accept(this) + ", ");
+            }
 
             sb.Remove(sb.Length - 2, 2);
 
@@ -572,10 +625,15 @@ namespace LSharp.CodeGeneration
         private void Genera(string code)
         {
             for (int i = 0; i < tab; i++)
+            {
                 output.Write("\t");
+            }
             output.WriteLine(code);
         }
 
         private void Genera(object code) => Genera(code.ToString());
+
+
+        public void Dispose() => output.Dispose();
     }
 }

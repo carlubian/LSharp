@@ -9,7 +9,7 @@ namespace LSharp
 {
     class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             // If there are no parameters, show help text
             if(args.Length == 0)

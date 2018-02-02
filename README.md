@@ -1,4 +1,8 @@
-![LSharp](http://carlubian.azurewebsites.net/images/LSharp.png "LSharp")
+[![Build Status](https://travis-ci.org/carlubian/LSharp.svg?branch=master)](https://travis-ci.org/carlubian/LSharp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/74a6e0dfec92438e9251f6460bd13410)](https://www.codacy.com/app/carlubian/LSharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=carlubian/LSharp&amp;utm_campaign=Badge_Grade)
+<hr/>
+
+![LSharp](https://carlubian.azurewebsites.net/images/LSharp.png?maxAge=2592000 "LSharp")
 ## Let's make a programming language. What could go wrong?
 
 L# is a dynamic programming language that is compiled into C# code.
