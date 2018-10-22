@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/carlubian/LSharp.svg?branch=master)](https://travis-ci.org/carlubian/LSharp)
+[![Build Status](https://carlubian.visualstudio.com/GitHub%20Interop/_apis/build/status/LSharp%20Build)](https://carlubian.visualstudio.com/GitHub%20Interop/_build/latest?definitionId=14)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/74a6e0dfec92438e9251f6460bd13410)](https://www.codacy.com/app/carlubian/LSharp?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=carlubian/LSharp&amp;utm_campaign=Badge_Grade)
 <hr/>
 
